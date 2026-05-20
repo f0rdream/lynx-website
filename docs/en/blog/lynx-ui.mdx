@@ -74,25 +74,40 @@ We are obsessed with design. LUNA is the proof.
 
 ## Low-Latency Interaction
 
-The difference between good and great is not only in the curve, but also in the timing.
+A design system does not stop at pixels. The way an interface responds to touch is part of the system too.
 
-Lynx uses a dual-thread model: the main thread handles graphics rendering, while the background thread runs JavaScript. In a traditional setup, interactions must cross that boundary, which introduces latency and makes advanced motion feel less direct than it should.
+That matters especially for components built around continuous input. A swipe, drag, or snap is judged frame by frame. If the visual response trails behind the gesture, the component may still work, but it no longer feels native.
 
-MTS moves interaction logic onto the main thread. That means gesture input, per-frame updates, and visual response can stay in sync, making interactions feel immediate instead of approximate. Swiper is a simple example: `delta in, transform out`, frame by frame, directly on the main thread.
+Lynx's dual-thread model gives lynx-ui a way to handle that tradeoff. The main thread handles graphics rendering, while the background thread runs JavaScript. For interaction-heavy components, MTS can move the high-frequency part of the interaction onto the main thread, keeping gesture input and visual updates close to the frame.
 
-{/* TODO(@fzx2666-fz): Insert a `<Go>` with a Swiper example to demonstrate low-latency interaction. */}
+`Swiper` shows the idea directly: drag input feeds transform updates frame by frame, so the card follows the gesture instead of catching up to it later.
 
-## Motion
+<Go
+  example="lynx-ui-swiper"
+  defaultFile="CustomTinder/index.tsx"
+  img="https://lf-lynx.tiktok-cdns.com/obj/lynx-artifacts-oss-sg/lynx-website/assets/lynx-ui/lynx-ui-cover-swiper.webm"
+  defaultEntryFile="dist/SwiperCustomTinder.lynx.bundle"
+  schema="{{{url}}}?fullscreen=true&bar_color=0d0d0d&bg_color=0d0d0d"
+  webPreviewMode="auto"
+/>
 
-With that foundation in place, low-latency interaction is what makes motion physics practical, not just decorative.
+### Motion
 
-And that is exactly where Motion.js comes in:
+Once interaction and rendering stay close together, motion can become part of the component itself.
 
-- Motion curves encode physical intuition: a spring animation feels alive; a bezier curve feels designed
-- Partnered with TikTok's design team to bring physics-based motion to more surfaces
-- Adapted the Motion.js imperative API fully into Lynx
-- **Same code. Same API. Web and native.**
-- We're now sponsoring the Motion.js project
+That is the role of Motion in lynx-ui. `@lynx-js/motion`, Lynx's adaptation of [Motion](https://motion.dev/), brings Motion's imperative API into Lynx components. It supports spring-based and bezier-based transitions, so a component can feel physically responsive when it should, and precisely timed when the product needs more deliberate pacing.
+{/* TODO: Insert a `@lynx-js/motion` final doc link */}
+
+`Sheet` shows why that matters. Drag, resistance, release, and settling need to read as one continuous behavior. With MTS keeping interaction close to rendering and Motion defining how the surface moves, the sheet feels held, not just played back.
+
+<Go
+  example="lynx-ui-sheet"
+  defaultFile="Basic/index.tsx"
+  img="https://lf-lynx.tiktok-cdns.com/obj/lynx-artifacts-oss-sg/lynx-website/assets/lynx-ui/lynx-ui-cover-sheet.webm"
+  defaultEntryFile="dist/SheetBasic.lynx.bundle"
+  schema="{{{url}}}?fullscreen=true&bar_color=0d0d0d&bg_color=0d0d0d"
+  webPreviewMode="auto"
+/>
 
 ## Try it today
 
